@@ -199,7 +199,7 @@ bestPWMMatchCoor <- function(pwm, seqs, coor, both.strand=T, flank=0)
 
 
 
-refinePWMMotif <- function(motifs=NULL, seqs, pwm.ld=NULL,  max.iter=50, tol=10^-4, mod="oops", null=rep(0.25, 4),pseudo=1, weights=rep(1, length(seqs)), motif.weights=NULL)
+refinePWMMotif <- function(motifs=NULL, seqs, pwm.ld=NULL,  max.iter=50, tol=10^-4, mod="oops", null=rep(0.25, 4),pseudo=1, weights=rep(1, length(seqs)), motif.weights=NULL, both.strand=T)
   {
     
     total.score <- -Inf
@@ -217,11 +217,11 @@ refinePWMMotif <- function(motifs=NULL, seqs, pwm.ld=NULL,  max.iter=50, tol=10^
     }
     repeat{
       if(mod=="oops"){
-        match<- bestPWMMatch(pwm.ld, seqs)
+        match<- bestPWMMatch(pwm.ld, seqs, both.strand=both.strand)
         match$weights = weights
       }
       else{
-        match <- scanPWMMatch(pwm.ld, seqs, min.score=1)
+        match <- scanPWMMatch(pwm.ld, seqs, min.score=1, both.strand=both.strand)
         ratio <- 2^match$score
         tmp <- tapply(ratio, match$seq.id, sum)
         seq.sum <- rep(0, nrow(match))
@@ -249,11 +249,11 @@ refinePWMMotif <- function(motifs=NULL, seqs, pwm.ld=NULL,  max.iter=50, tol=10^
 
 
 
-refinePWMMotifExtend <- function(motifs=NULL, seqs, pwm.ld=NULL, flank=3, extend.tol=10^-3, trim.rel.entropy=0.2,  null=rep(0.25, 4), max.width=20, ...)
+refinePWMMotifExtend <- function(motifs=NULL, seqs, pwm.ld=NULL, flank=3, extend.tol=10^-3, trim.rel.entropy=0.2,  null=rep(0.25, 4), max.width=20, both.strand=T, ...)
   {
     prev.score <- 0    
     repeat{
-      result <- refinePWMMotif(motifs=motifs, seqs=seqs, pwm.ld=pwm.ld, null=null, ...)
+      result <- refinePWMMotif(motifs=motifs, seqs=seqs, pwm.ld=pwm.ld, null=null, both.strand=both.strand, ...)
       pwm <- result$model
       width <- ncol(pwm$prob)
       ###trim on entropy###
@@ -270,7 +270,7 @@ refinePWMMotifExtend <- function(motifs=NULL, seqs, pwm.ld=NULL, flank=3, extend
       if(trim.right - trim.left > max.width){
         break
       }
-      match <- bestPWMMatch(pwm$logodd[,trim.left:trim.right], seqs, flank=flank)      
+      match <- bestPWMMatch(pwm$logodd[,trim.left:trim.right], seqs, flank=flank, both.strand=both.strand)
       motifs <- match$pattern
       new.score <- result$score
       cat("Extend score", new.score, prev.score, "\n")
