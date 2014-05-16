@@ -65,8 +65,8 @@ pasteSeq <- function(seqs, linker=10)
 {
   len = nchar(seqs)
   delim = paste( rep("+", linker), collapse="")
-  new.seq <- DNAString(paste(paste(as.character(seqs), collapse=delim), delim, sep=""))
-  start = c(1, cumsum(len+linker)+1)[1:length(len)]
+  new.seq <- DNAString(paste(delim, paste(as.character(seqs), collapse=delim), delim, sep=""))
+  start = c(1+linker, cumsum(len+linker)+1+linker)[1:length(len)]
   end = start + len - 1
   v <- Views(new.seq, start=start, end=end)
   return(v)
