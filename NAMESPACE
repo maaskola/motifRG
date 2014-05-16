@@ -1,0 +1,19 @@
+export(findMotif,
+       findMotifFasta,
+       findMotifFgBg,
+       summaryMotif,
+       plotMotif, 
+       motifLatexTable,
+       motifHtmlTable, 
+       refinePWMMotif,
+       refinePWMMotifExtend,
+       getSequence
+       )
+
+import(IRanges)
+import(XVector)
+import(Biostrings)
+import(grid)
+import(seqLogo)
+import(parallel)
+import(BSgenome)
